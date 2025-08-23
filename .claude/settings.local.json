@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:api-docs.render.com)",
+      "mcp__shadcn-ui__list_components"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
