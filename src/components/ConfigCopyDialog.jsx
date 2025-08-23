@@ -21,9 +21,9 @@ export function ConfigCopyDialog({ mcp, isOpen, onClose }) {
       mcpServers: {
         [mcp.name]: {
           command: "node",
-          args: ["path/to/client-proxy.js"],
+          args: ["{client-proxy.js}"],
           env: {
-            PRIVATE_KEY: "your-private-key",
+            PRIVATE_KEY: "{your-private-key}",
             TARGET_URL: mcp.deploy_url + '/mcp'
           }
         }

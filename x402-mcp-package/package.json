@@ -1,0 +1,63 @@
+{
+  "name": "@civic/x402-mcp",
+  "version": "0.0.3",
+  "description": "X402 payment integration for Model Context Protocol (MCP)",
+  "main": "dist/index.js",
+  "type": "module",
+  "packageManager": "pnpm@9.15.4",
+  "bin": {
+    "x402-mcp": "./dist/scripts/client-proxy.js",
+    "client-proxy": "./dist/scripts/client-proxy.js"
+  },
+  "files": [
+    "dist/",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "dev": "tsx watch example/server.ts",
+    "dev2": "tsx watch example/server2.ts",
+    "build": "tsc -p tsconfig.build.json",
+    "start": "tsx example/server.ts",
+    "start2": "tsx example/server2.ts",
+    "example:run": "tsx example/client.ts",
+    "example:client-proxy": "tsx example/proxy/client-proxy.ts",
+    "example:client-proxy:stdio": "tsx example/proxy/client-proxy.ts --stdio",
+    "example:client-proxy:run": "tsx example/proxy/client.ts",
+    "example:server-proxy": "tsx example/proxy/server-proxy.ts",
+    "proxy": "tsx scripts/client-proxy.ts",
+    "generate-wallet": "tsx scripts/generateWallet.ts",
+    "test": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "lint": "biome check .",
+    "lint:fix": "biome check --write .",
+    "format": "biome format --write .",
+    "check": "biome check --formatter-enabled=false ."
+  },
+  "peerDependencies": {
+    "@modelcontextprotocol/sdk": "^1.17.0"
+  },
+  "dependencies": {
+    "@civic/hook-common": "0.2.3",
+    "@civic/passthrough-mcp-server": "0.7.1",
+    "viem": "^2.33.2",
+    "x402": "^0.5.0",
+    "x402-fetch": "^0.4.2"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.1.4",
+    "@flydotio/dockerfile": "^0.7.10",
+    "@modelcontextprotocol/sdk": "^1.17.1",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.3",
+    "@types/node": "^22.10.5",
+    "@vitest/coverage-v8": "^3.2.4",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^5.1.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3",
+    "vitest": "^3.2.4",
+    "zod": "^3.25.64"
+  }
+}

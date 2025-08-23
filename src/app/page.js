@@ -136,14 +136,11 @@ export default function HomePage() {
                 <CardContent className="space-y-6">
                   {/* Civic Auth User Button with extended height for full interface */}
                   <div className="flex flex-col items-center space-y-4">
-                    <div className="w-full min-h-[200px] flex items-center justify-center border-2 border-dashed border-primary/30 rounded-lg bg-primary/5">
+                    <div className="w-full max-w-xs flex items-center justify-center border-2 border-dashed border-primary/30 rounded-lg bg-primary/5 py-4">
                       <UserButton
                         style={{
-                          minHeight: '180px',
-                          width: '100%',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center'
+                          width: '200px',
+                          height: '50px'
                         }}
                       />
                     </div>

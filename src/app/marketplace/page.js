@@ -15,300 +15,99 @@ export default function MarketplacePage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [isLoading, setIsLoading] = useState(true)
 
-  // Fetch MCPs with dummy data
+  // Fetch MCPs from database
   const fetchMCPs = useCallback(async () => {
-    console.log('🔄 Fetching dummy MCP data...')
+    console.log('🔄 Fetching MCPs from database...')
+    try {
+      const response = await fetch('/api/marketplace')
+      const result = await response.json()
 
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 1000))
-
-    // Dummy MCP data as if fetched from database
-    const dummyMcpsData = [
-      {
-        id: 'playwright-001',
-        name: 'Playwright MCP',
-        status: DEPLOYMENT_STATUS.LIVE,
-        deploy_url: 'https://playwright-mcp.example.com',
-        render_service_id: 'srv-playwright-001',
-        deploy_id: 'dpl-playwright-001',
-        output_json: {
-          service: {
-            serviceDetails: {
-              url: 'https://playwright-mcp.example.com'
-            }
-          }
-        },
-        created_at: '2024-01-15T10:30:00Z',
-        updated_at: '2024-01-15T10:30:00Z'
-      },
-      {
-        id: 'browser-automation-002',
-        name: 'Browser Automation MCP',
-        status: DEPLOYMENT_STATUS.LIVE,
-        deploy_url: 'https://browser-automation.example.com',
-        render_service_id: 'srv-browser-002',
-        deploy_id: 'dpl-browser-002',
-        output_json: {
-          service: {
-            serviceDetails: {
-              url: 'https://browser-automation.example.com'
-            }
-          }
-        },
-        created_at: '2024-01-14T09:15:00Z',
-        updated_at: '2024-01-14T09:15:00Z'
-      },
-      {
-        id: 'web-scraper-003',
-        name: 'Web Scraper MCP',
-        status: DEPLOYMENT_STATUS.DEPLOYING,
-        deploy_url: null,
-        render_service_id: 'srv-scraper-003',
-        deploy_id: 'dpl-scraper-003',
-        output_json: {
-          service: {
-            serviceDetails: {
-              url: null
-            }
-          }
-        },
-        created_at: '2024-01-13T14:20:00Z',
-        updated_at: '2024-01-13T14:20:00Z'
-      },
-      {
-        id: 'data-extractor-004',
-        name: 'Data Extractor MCP',
-        status: DEPLOYMENT_STATUS.PENDING,
-        deploy_url: null,
-        render_service_id: 'srv-extractor-004',
-        deploy_id: 'dpl-extractor-004',
-        output_json: {
-          service: {
-            serviceDetails: {
-              url: null
-            }
-          }
-        },
-        created_at: '2024-01-12T16:45:00Z',
-        updated_at: '2024-01-12T16:45:00Z'
-      },
-      {
-        id: 'form-filler-005',
-        name: 'Form Filler MCP',
-        status: DEPLOYMENT_STATUS.LIVE,
-        deploy_url: 'https://form-filler.example.com',
-        render_service_id: 'srv-form-005',
-        deploy_id: 'dpl-form-005',
-        output_json: {
-          service: {
-            serviceDetails: {
-              url: 'https://form-filler.example.com'
-            }
-          }
-        },
-        created_at: '2024-01-11T11:10:00Z',
-        updated_at: '2024-01-11T11:10:00Z'
-      },
-      {
-        id: 'ui-tester-006',
-        name: 'UI Testing MCP',
-        status: DEPLOYMENT_STATUS.FAILED,
-        deploy_url: null,
-        render_service_id: 'srv-ui-006',
-        deploy_id: 'dpl-ui-006',
-        output_json: {
-          service: {
-            serviceDetails: {
-              url: null
-            }
-          }
-        },
-        created_at: '2024-01-10T08:30:00Z',
-        updated_at: '2024-01-10T08:30:00Z'
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to fetch MCPs')
       }
-    ]
 
-    console.log(`📦 Found ${dummyMcpsData.length} dummy MCPs`)
+      const mcpsData = result.mcps || []
+      console.log(`📦 Found ${mcpsData.length} MCPs in database`)
 
-    // Process dummy data with tools
-    const mcpsWithTools = await Promise.all(
-      dummyMcpsData.map(async (mcp) => {
-        if (mcp.status === DEPLOYMENT_STATUS.LIVE) {
-          try {
-            console.log(`🔍 Processing dummy MCP ${mcp.name}:`)
+      // For live MCPs, fetch tool data from MCP tools API
+      const mcpsWithTools = await Promise.all(
+        mcpsData.map(async (mcp) => {
+          if (mcp.status === DEPLOYMENT_STATUS.LIVE) {
+            try {
+              console.log(`🔍 Debugging MCP ${mcp.name}:`)
+              console.log(`  - deploy_url: ${mcp.deploy_url}`)
+              console.log(`  - output_json structure:`, mcp.output_json)
 
-            // Extract URL from output_json if deploy_url is not available
-            let serviceUrl = mcp.deploy_url
-            if (!serviceUrl && mcp.output_json?.service?.serviceDetails?.url) {
-              serviceUrl = mcp.output_json.service.serviceDetails.url
-              console.log(`  - ✅ Extracted serviceUrl from output_json: ${serviceUrl}`)
-            }
-
-            // Simulate fetching tools data for live MCPs
-            let tools = []
-            let description = mcp.name
-            let environment_variables = {}
-
-            if (serviceUrl) {
-              console.log(`🔧 Fetching dummy tools for live MCP: ${mcp.name}`)
-
-              // Create dummy tools based on MCP name
-              if (mcp.name === 'Playwright MCP') {
-                tools = [
-                  {
-                    name: 'browser_navigate',
-                    description: 'Navigate to a URL',
-                    inputSchema: {
-                      type: 'object',
-                      properties: {
-                        url: {
-                          type: 'string',
-                          description: 'The URL to navigate to'
-                        }
-                      },
-                      required: ['url']
-                    }
-                  },
-                  {
-                    name: 'browser_navigate_back',
-                    description: 'Go back to the previous page',
-                    inputSchema: {
-                      type: 'object',
-                      properties: {},
-                      required: []
-                    }
-                  },
-                  {
-                    name: 'browser_navigate_forward',
-                    description: 'Go forward to the next page',
-                    inputSchema: {
-                      type: 'object',
-                      properties: {},
-                      required: []
-                    }
-                  }
-                ]
-                description = 'A comprehensive browser automation tool with navigation capabilities'
-                environment_variables = {
-                  BROWSER_TYPE: 'chromium',
-                  HEADLESS: 'false',
-                  TIMEOUT: '30000'
-                }
-              } else if (mcp.name === 'Browser Automation MCP') {
-                tools = [
-                  {
-                    name: 'browser_click',
-                    description: 'Perform click on a web page element',
-                    inputSchema: {
-                      type: 'object',
-                      properties: {
-                        selector: {
-                          type: 'string',
-                          description: 'CSS selector or XPath of the element to click'
-                        }
-                      },
-                      required: ['selector']
-                    }
-                  },
-                  {
-                    name: 'browser_type',
-                    description: 'Type text into an editable element',
-                    inputSchema: {
-                      type: 'object',
-                      properties: {
-                        selector: {
-                          type: 'string',
-                          description: 'CSS selector of the input element'
-                        },
-                        text: {
-                          type: 'string',
-                          description: 'Text to type into the element'
-                        }
-                      },
-                      required: ['selector', 'text']
-                    }
-                  }
-                ]
-                description = 'Advanced browser automation with interaction capabilities'
-                environment_variables = {
-                  DEFAULT_TIMEOUT: '10000',
-                  RETRY_ATTEMPTS: '3'
-                }
-              } else if (mcp.name === 'Form Filler MCP') {
-                tools = [
-                  {
-                    name: 'browser_select_option',
-                    description: 'Select an option in a dropdown',
-                    inputSchema: {
-                      type: 'object',
-                      properties: {
-                        selector: {
-                          type: 'string',
-                          description: 'CSS selector of the dropdown element'
-                        },
-                        value: {
-                          type: 'string',
-                          description: 'Value or text to select'
-                        }
-                      },
-                      required: ['selector', 'value']
-                    }
-                  },
-                  {
-                    name: 'browser_file_upload',
-                    description: 'Upload one or multiple files',
-                    inputSchema: {
-                      type: 'object',
-                      properties: {
-                        selector: {
-                          type: 'string',
-                          description: 'CSS selector of the file input element'
-                        },
-                        filePaths: {
-                          type: 'array',
-                          items: { type: 'string' },
-                          description: 'Array of file paths to upload'
-                        }
-                      },
-                      required: ['selector', 'filePaths']
-                    }
-                  }
-                ]
-                description = 'Specialized tool for form filling and file uploads'
-                environment_variables = {
-                  MAX_FILE_SIZE: '10MB',
-                  SUPPORTED_FORMATS: 'pdf,doc,docx,jpg,png'
-                }
+              // Extract URL from output_json if deploy_url is not available
+              let serviceUrl = mcp.deploy_url
+              if (!serviceUrl && mcp.output_json?.service?.serviceDetails?.url) {
+                serviceUrl = mcp.output_json.service.serviceDetails.url
+                console.log(`  - ✅ Extracted serviceUrl from output_json: ${serviceUrl}`)
+              } else if (!serviceUrl) {
+                console.log(`  - ❌ No serviceUrl found in deploy_url or output_json`)
+                console.log(`  - output_json.service:`, mcp.output_json?.service)
+                console.log(`  - output_json.service.serviceDetails:`, mcp.output_json?.service?.serviceDetails)
+              } else {
+                console.log(`  - ✅ Using deploy_url as serviceUrl: ${serviceUrl}`)
               }
 
-              console.log(`🛠️ Dummy tools created for ${mcp.name}:`, tools.length)
-            }
+              if (serviceUrl) {
+                console.log(`🔧 Fetching tools for live MCP: ${mcp.name} from ${serviceUrl}`)
+                const toolsResponse = await fetch(`/api/mcp-tools?url=${encodeURIComponent(serviceUrl)}`)
+                console.log(`📡 MCP tools API response status: ${toolsResponse.status}`)
 
-            return {
-              ...mcp,
-              tools,
-              description,
-              environment_variables,
-              pricing: Math.floor(Math.random() * 50) + 10 // Random pricing between 10-60
+                if (toolsResponse.ok) {
+                  const toolsData = await toolsResponse.json()
+                  console.log(`🛠️ Tools data received for ${mcp.name}:`, toolsData)
+                  return {
+                    ...mcp,
+                    tools: toolsData.tools || [],
+                    description: toolsData.info?.description || mcp.name,
+                    environment_variables: toolsData.info?.environmentVariables || {},
+                    pricing: 0 // Default pricing, can be enhanced later
+                  }
+                } else {
+                  console.error(`❌ MCP tools API failed for ${mcp.name}:`, await toolsResponse.text())
+                }
+              } else {
+                console.log(`⚠️ No serviceUrl available for MCP ${mcp.name}, skipping tools fetch`)
+              }
+            } catch (error) {
+              console.error(`Error fetching tools for MCP ${mcp.id}:`, error)
             }
-          } catch (error) {
-            console.error(`Error processing dummy MCP ${mcp.id}:`, error)
           }
-        }
 
-        return {
-          ...mcp,
-          tools: [],
-          description: mcp.name,
-          environment_variables: {},
-          pricing: 0
-        }
-      })
-    )
+          return {
+            ...mcp,
+            tools: [],
+            description: mcp.name,
+            environment_variables: {},
+            pricing: 0
+          }
+        })
+      )
 
-    console.log(`✅ Dummy MCPs processed, setting state with ${mcpsWithTools.length} MCPs`)
-    setMcps(mcpsWithTools)
-    setIsLoading(false)
+      console.log(`✅ MCPs processed, setting state with ${mcpsWithTools.length} MCPs`)
+      setMcps(mcpsWithTools)
+    } catch (error) {
+      console.error('❌ Error fetching MCPs:', error)
+      // Use toast directly instead of from dependency
+      if (typeof window !== 'undefined') {
+        // Only show toast on client side
+        setTimeout(() => {
+          const toastEvent = new CustomEvent('show-toast', {
+            detail: {
+              title: 'Error loading MCPs',
+              description: 'Unable to load marketplace data. Please try again.',
+              variant: 'destructive',
+            }
+          });
+          window.dispatchEvent(toastEvent);
+        }, 100);
+      }
+    } finally {
+      setIsLoading(false)
+    }
   }, [])
 
   // Check deployment status for loading MCPs
