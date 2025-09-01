@@ -1,36 +1,50 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+> Note: After signing in, the dashboard may take 5–10 seconds to load. Please wait for the redirect to complete.
+> Deployment of MCP servers from the platform typically takes 1–2 minutes.
 
-## Getting Started
+## Using MCPs on the Platform
 
-First, run the development server:
+Follow these steps to enable MCPs with X402 payments in your client:
+
+1) Clone the X402 MCP repo and build it
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/Nirmal2000/x402-mcp.git
+cd x402-mcp
+npm run build
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2) Configure your MCP client to use the client proxy
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+You can copy the MCP client config directly from the Marketplace UI. For reference, here is the manual form you can paste into your client config (e.g., Claude Desktop `claude_desktop_config.json`):
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```json
+"youtube-video-clipper": {
+  "command": "node",
+  "args": [
+    "[path to repo]/x402-mcp/dist/scripts/client-proxy.js"
+  ],
+  "env": {
+    "PRIVATE_KEY": "your private key",
+    "TARGET_URL": "the server url from the platform"
+  }
+}
+```
 
-## Learn More
+- PRIVATE_KEY: your wallet’s private key for payments.
+- TARGET_URL: the MCP server URL provided by the platform (the tool endpoint).
 
-To learn more about Next.js, take a look at the following resources:
+Once added, restart your MCP client. You can now invoke tools exposed by the server and the proxy will handle X402 payment flows automatically.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Testnet funds: use the Coinbase faucet to obtain USDC/ETH on Base Sepolia for tool payments and gas:
+https://portal.cdp.coinbase.com/products/faucet
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Adding X402 Sample MCPs
 
-## Deploy on Vercel
+You can try these sample MCPs with the platform:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. YouTube clipping example
+   - https://github.com/Nirmal2000/youtube-video-clip
+2. TODO sample (same repo as the X402 MCP toolkit)
+   - https://github.com/Nirmal2000/x402-mcp.git
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Follow the instructions in each repository/website to configure environment variables and run the servers.
