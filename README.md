@@ -1,5 +1,6 @@
 > Note: After signing in, the dashboard may take 5–10 seconds to load. Please wait for the redirect to complete.
 > Deployment of MCP servers from the platform typically takes 1–2 minutes.
+If tools are not visible, reload the page to see the new tools once the MCP server is deployed and live.
 
 ## Using MCPs on the Platform
 
@@ -38,6 +39,7 @@ Once added, restart your MCP client. You can now invoke tools exposed by the ser
 Testnet funds: use the Coinbase faucet to obtain USDC/ETH on Base Sepolia for tool payments and gas:
 https://portal.cdp.coinbase.com/products/faucet
 
+
 ## Adding X402 Sample MCPs
 
 You can try these sample MCPs with the platform:
@@ -48,3 +50,4 @@ You can try these sample MCPs with the platform:
    - https://github.com/Nirmal2000/x402-mcp.git
 
 Follow the instructions in each repository/website to configure environment variables and run the servers.
+The tools are already added to the platform. You can still test it out by deploying those MCPs to the platform. Instructions for deploying them are in their respective repositories READMEs.
