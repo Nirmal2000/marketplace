@@ -1,5 +1,4 @@
 /// <reference lib="dom" />
-
 /**
  * Converts various header formats to a plain object.
  *
@@ -12,8 +11,6 @@
  * Without this conversion, critical headers like 'Accept: application/json, text/event-stream'
  * (required by MCP) are lost during the payment retry, causing 406 Not Acceptable errors.
  *
- * Fix submitted: https://github.com/coinbase/x402/pull/314
- *
  * This function handles three possible input formats:
  * - Headers instance (from the Fetch API)
  * - Array of tuples ([key, value][])
@@ -22,27 +19,22 @@
  * @param headers - The headers in any of the supported formats
  * @returns A plain object with header key-value pairs that can be safely spread
  */
-export function convertHeaders(headers?: HeadersInit): Record<string, string> {
-  const headersObject: Record<string, string> = {};
-
+export function convertHeaders(headers) {
+  const headersObject = {};
   if (!headers) {
     return headersObject;
   }
-
-  if (headers instanceof Headers) {
-    // Headers object from Fetch API
+  if (typeof Headers !== 'undefined' && headers instanceof Headers) {
     headers.forEach((value, key) => {
       headersObject[key] = value;
     });
   } else if (Array.isArray(headers)) {
-    // Array of tuples format: [["Content-Type", "application/json"], ...]
     headers.forEach(([key, value]) => {
       headersObject[key] = value;
     });
   } else {
-    // Plain object format: { "Content-Type": "application/json", ... }
     Object.assign(headersObject, headers);
   }
-
   return headersObject;
 }
+

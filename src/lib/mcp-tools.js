@@ -2,7 +2,7 @@ import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { createWalletClient, http, publicActions } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
 import { baseSepolia } from 'viem/chains';
-import { makePaymentAwareClientTransport } from '../../x402-mcp-package/dist/src/index.js';
+import { makePaymentAwareClientTransport } from './x402/client.js';
 
 // Fake private key for tool discovery (read-only operations)
 const FAKE_PRIVATE_KEY = '0x1234567890123456789012345678901234567890123456789012345678901234';
